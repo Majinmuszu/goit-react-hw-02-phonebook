@@ -2,7 +2,7 @@ import "./App.css";
 import React, { Component } from "react";
 // import PropTypes from "prop-types";
 import { nanoid } from "nanoid";
-import { ContactForm } from "./components/ContactForm/ContactForm";
+import  ContactForm  from "./components/ContactForm/ContactForm.jsx";
 import { ContactList } from "./components/ContactList/ContactList";
 import { Filter } from "./components/Filter/Filter";
 
@@ -18,33 +18,27 @@ export default class App extends Component {
       { id: "id-3", name: "Eden Clements", number: "645-17-79" },
       { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
     ],
-    name: "",
-    number: "",
     filter: "",
   };
 
-  addContactsToList = (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    this.setState((state) => ({
-      contacts: [
-        ...state.contacts,
-        { name: state.name, id: nanoid(), number: state.number },
-      ],
-    }));
-    form.reset();
+  addContactsToList = ({ name, number }) => {
+    const { contacts } = this.state;
+    const contact = {
+      id: nanoid(),
+      name,
+      number,
+    };
+    contacts.some((i) => i.name === name)
+      ? alert(`${name} is already in contacts`)
+      : this.setState(({ contacts }) => ({
+          contacts: [contact, ...contacts],
+        }));
   };
 
-  setContactInState = (e) => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
 
   filterContacts = (e) => {
     const value = e.target.value.toLowerCase();
     this.setState({ filter: value });
-    const allContacts = [this.state.contacts];
-    console.log(allContacts);
   };
 
   getContacts = () => {
@@ -58,7 +52,6 @@ export default class App extends Component {
       <div className="App">
         <h1>Phonebook</h1>
         <ContactForm
-          setContact={this.setContactInState}
           submitForm={this.addContactsToList}
         />
         <h2>Contacts</h2>
