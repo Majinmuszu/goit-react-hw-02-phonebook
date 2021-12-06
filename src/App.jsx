@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { nanoid } from "nanoid";
 import { ContactForm } from "./components/ContactForm/ContactForm";
 import { ContactList } from "./components/ContactList/ContactList";
+import { Filter } from "./components/Filter/Filter";
 
 export default class App extends Component {
   // static propTypes = {
@@ -19,6 +20,7 @@ export default class App extends Component {
     ],
     name: "",
     number: "",
+    filter: "",
   };
 
   addContactsToList = (e) => {
@@ -32,12 +34,26 @@ export default class App extends Component {
     }));
     form.reset();
   };
+
   setContactInState = (e) => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   };
 
+  filterContacts = (e) => {
+    const value = e.target.value.toLowerCase();
+    this.setState({ filter: value });
+    const allContacts = [this.state.contacts];
+    console.log(allContacts);
+  };
+
+  getContacts = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter((i) => i.name.toLowerCase().includes(filter));
+  };
+
   render() {
+    const getContacts = this.getContacts();
     return (
       <div className="App">
         <h1>Phonebook</h1>
@@ -46,7 +62,8 @@ export default class App extends Component {
           submitForm={this.addContactsToList}
         />
         <h2>Contacts</h2>
-        <ContactList contacts={this.state.contacts} />
+        <Filter filter={this.filterContacts} />
+        <ContactList contacts={getContacts} />
       </div>
     );
   }
