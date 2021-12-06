@@ -2,7 +2,7 @@ import "./App.css";
 import React, { Component } from "react";
 // import PropTypes from "prop-types";
 import { nanoid } from "nanoid";
-import  ContactForm  from "./components/ContactForm/ContactForm.jsx";
+import ContactForm from "./components/ContactForm/ContactForm.jsx";
 import { ContactList } from "./components/ContactList/ContactList";
 import { Filter } from "./components/Filter/Filter";
 
@@ -21,7 +21,7 @@ export default class App extends Component {
     filter: "",
   };
 
-  addContactsToList = ({ name, number }) => {
+  setContacts = ({ name, number }) => {
     const { contacts } = this.state;
     const contact = {
       id: nanoid(),
@@ -35,8 +35,13 @@ export default class App extends Component {
         }));
   };
 
+  deleteContact = (id) => {
+    this.setState((p) => ({
+      contacts: p.contacts.filter((i) => i.id !== id),
+    }));
+  };
 
-  filterContacts = (e) => {
+  setFilter = (e) => {
     const value = e.target.value.toLowerCase();
     this.setState({ filter: value });
   };
@@ -51,12 +56,13 @@ export default class App extends Component {
     return (
       <div className="App">
         <h1>Phonebook</h1>
-        <ContactForm
-          submitForm={this.addContactsToList}
-        />
+        <ContactForm submitForm={this.setContacts} />
         <h2>Contacts</h2>
-        <Filter filter={this.filterContacts} />
-        <ContactList contacts={getContacts} />
+        <Filter filter={this.setFilter} />
+        <ContactList
+          contacts={getContacts}
+          deleteContact={this.deleteContact}
+        />
       </div>
     );
   }
